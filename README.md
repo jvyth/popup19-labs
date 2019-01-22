@@ -1,2 +1,2 @@
 # labs
-For popup labwork spring semester of 2019.
+This branch is for lab1 of popup spring semester of 2019.
