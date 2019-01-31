@@ -69,10 +69,10 @@ public class UnionFind {
     String cmd; int a,b;
     for (;Q > 0; --Q) {
       cmd = io.getWord(); a = io.getInt(); b = io.getInt();
-      if (cmd.equals("?")) {
-        io.println(uf.same(a,b) ? "yes" : "no");
-      } else {
+      if (cmd.equals("+")) {
         uf.union(a,b);
+      } else {
+        io.println(uf.same(a,b) ? "yes" : "no");
       }
     }
     io.close();
