@@ -1,0 +1,56 @@
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class UnionFind {
+  private class Node {
+    int val;
+    int size;
+    public Node parent;
+
+    public Node(int x) {
+      this.val = x;
+      this.parent = this;
+      this.size = 1;
+    }
+
+    public boolean isRoot() {
+      return this == this.parent;
+    }
+  }
+
+  private Node[] sets;
+
+  public UnionFind(int initSize) {
+    sets = new Node[initSize];
+  }
+
+  Node find(int x) {
+      Node n = sets[x];
+      if (n == null) return null;
+      if(!n.isRoot()){
+        n.parent = find(n.parent.val);
+      }
+      return n.parent;
+  }
+
+  boolean makeSet(int x) {
+      if (sets[x] != null) return false;
+      sets[x] = new Node(x);
+      return true;
+  }
+
+  Node union(int x, int y) {
+    Node xr = find(x);
+    Node yr = find(y);
+    if (xr == null || yr == null) return null;
+    if(xr.size > yr.size){
+        yr.parent = xr;
+        xr.size += yr.size;
+        return xr;
+    } else {
+        xr.parent = yr;
+        yr.size += xr.size;
+        return yr;
+    }
+  }
+}

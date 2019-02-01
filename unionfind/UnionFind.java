@@ -1,57 +1,58 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class UnionFind {
-  private class Node {
-    int val;
-    public Node parent;
-
-    public Node(int x) {
-      this.val = x;
-      this.parent = this;
-    }
-
-    public boolean isRoot() {
-      return this == this.parent;
-    }
-  }
-
-  private ArrayList<Node> sets;
+  private int[] parents;
+  private int[] size;
 
   public UnionFind(int initSize) {
-    sets = new ArrayList<>(initSize);
+    parents = new int[++initSize];
+    size = new int[initSize];
   }
 
-  Node find(int x) {
-    try {
-      Node n = sets.get(x);
-      if (n == null) return null;
-      while(!n.isRoot()) {
-        Node tmp = n;
-        n = n.parent;
-        tmp.parent = n.parent;
+  int find(int x) {
+      if(parents[++x] == 0){
+          parents[x] = x;
       }
-      return n;
-    } catch (IndexOutOfBoundsException e) {
-      return null;
-    }
+
+      if(parents[x] != x){
+        parents[x] = findHelper(parents[x]);
+      }
+      return parents[x];
+  }
+  
+//  int find(int x){
+//      if(parents[++x] == 0){
+//          parents[x] = x;
+//      } 
+//
+//      int tmp;
+//      while(parents[x] != x){
+//          tmp = x;
+//          x = parents[x];
+//          parents[tmp] = parents[parents[x]];
+//      }
+//      return x;
+//  }
+
+  int findHelper(int x){
+      if(parents[x] != x){
+        parents[x] = findHelper(parents[x]);
+      }
+      return parents[x];
   }
 
-  boolean makeSet(int x) {
-    try {
-      if (sets.get(x) != null) return false;
-      sets.set(x, new Node(x));
-      return true;
-    } catch (IndexOutOfBoundsException e) {
-      sets.ensureCapacity(x+1);
-      return makeSet(x);
+  int union(int x, int y) {
+    int xr = find(x);
+    int yr = find(y);
+    if(size[xr] > size[yr]){
+        parents[yr] = xr;
+        size[xr] += size[yr];
+        return xr;
+    } else {
+        parents[xr] = yr;
+        size[yr] += size[xr];
+        return yr;
     }
-  }
-
-  Node union(int x, int y) {
-    Node xr = find(x);
-    Node yr = find(y);
-    if (xr == null || yr == null) return null;
-    yr.parent = xr;
-    return xr;
   }
 }
