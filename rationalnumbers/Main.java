@@ -1,3 +1,7 @@
+/*
+ *  This file contains a solution for https://kth.kattis.com/problems/rationalarithmetic
+ *  Created during spring semester of 2019 for the course DD2458 at KTH
+ */
 public class Main{
     public static void main(String[] args){
         Kattio kattio = new Kattio(System.in, System.out); 

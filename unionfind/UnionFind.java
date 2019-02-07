@@ -1,15 +1,20 @@
 /*
-  This file contains a solution for https://kth.kattis.com/problems/unionfind
-  Created during spring semester of 2019 for the course DD2458 at KTH
-  Authors: Jakob Vyth (vyth@kth.se) and Carl Nyströmer (carlnys@kth.se)
-*/
-
-import java.util.Arrays;
-
+ * The puropse of this class is to efficiently unionize sets and to find out
+ * whether or not two elements lie in the same set. Each set is identified 
+ * by an unique integer in the same range of the number of elements. 
+ * The UnionFind data structure makes makes both operations run in O(logn).
+ *
+ * @author Jakob Vyth (vyth@kth.se) 
+ * @author Carl Nyströmer (carlnys@kth.se)
+ */
 public class UnionFind {
   private int[] parents;
   private int[] size;
 
+  /*
+   * Creates a UnionFind data structure.
+   * @param n The number of initial disjoint sets. n > 0
+   */
   public UnionFind(int n) {
     parents = new int[n];
     size = new int[n];
@@ -19,31 +24,24 @@ public class UnionFind {
     }
   }
 
+  /*
+   * Returns whether or not two elements lie in the same set.
+   * @param x First element 0<x<n where n is the number of elements
+   * @param y Second element 0<y<n
+   * @return True if x and y in same set, false otherwise.
+   */
   public boolean same(int x, int y) {
     return find(x) == find(y);
   }
 
-  private int find(int x) {
-    if (parents[x] != x) parents[x] = find(parents[x]);
-    return parents[x];
-  }
-
-  // private int find(int x) {
-  //   while (parents[x] != x) x = parents[x];
-  //   return x;
-  // }
-
-  // private int find(int x) {
-  //
-  //   while (parents[x] != x) {
-  //     int tmp = x;
-  //     x = parents[x];
-  //     parents[tmp] = parents[x];
-  //   }
-  //   return x;
-  // }
-
-  int union(int x, int y) {
+  /*
+   * Unionize the sets containing x and y. If x and y are already in the same set
+   * no union is needed.
+   * @param x An element in some set 0<x<n
+   * @param y A second element in some set 0<y<n
+   * @return The identifier (also an element) of the set containing x and y. 
+   */
+  public int union(int x, int y) {
     int xRoot = find(x);
     int yRoot = find(y);
     if (xRoot == yRoot) return xRoot;
@@ -58,23 +56,8 @@ public class UnionFind {
     }
   }
 
-  public String toString() {
-    return Arrays.toString(parents);
-  }
-
-  public static void main(String[] args) {
-    Kattio io = new Kattio(System.in, System.out);
-    int N = io.getInt(); int Q = io.getInt();
-    UnionFind uf = new UnionFind(N);
-    String cmd; int a,b;
-    for (;Q > 0; --Q) {
-      cmd = io.getWord(); a = io.getInt(); b = io.getInt();
-      if (cmd.equals("+")) {
-        uf.union(a,b);
-      } else {
-        io.println(uf.same(a,b) ? "yes" : "no");
-      }
-    }
-    io.close();
+  private int find(int x) {
+    if (parents[x] != x) parents[x] = find(parents[x]);
+    return parents[x];
   }
 }

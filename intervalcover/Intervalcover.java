@@ -1,71 +1,52 @@
-/*
-   This file contains a solution for https://kth.kattis.com/problems/intervalcover
-   Created during spring semester of 2019 for the course DD2458 at KTH
-Authors: Jakob Vyth (vyth@kth.se) and Carl Nyströmer (carlnys@kth.se)
-*/
-
 import java.util.ArrayList;
 import java.util.Collections;
 
+
+/*
+ *  The purpose of this class is to solve the interval cover problem by utilizing a greedy algorithm.
+ *  
+ *  @author Jakob Vyth (vyth@kth.se)
+ *  @author Carl Nyströmer (carlnys@kth.se)
+ */
 class Intervalcover {
-    public static ArrayList<Integer> solveCase(double L, double R, int n, ArrayList<Interval> intervals) {
+
+    /*
+     * Solves the interval cover problem.
+     * @param L The low end of the interval to cover
+     * @param R The high end of the interval to cover
+     * @param unsortedIntervals The intervals available for covering the interval
+     * @return An array specifying the id's of the intervals chosen to cover the interval.
+     *     The id's will be ordered in the array, in the same order as they're chosen.  
+     *     If there's no solution, null will be returned.
+     */
+    public static ArrayList<Integer> cover(double L, double R, 
+                                           ArrayList<Interval> unsortedIntervals) {
+
+        ArrayList<Interval> intervals = new ArrayList<>(unsortedIntervals);
+        Collections.sort(intervals);
+        int n = intervals.size();
         ArrayList<Integer> S = new ArrayList<>(n);
-        double max_b = Double.NEGATIVE_INFINITY;
-        int max_index = 0;
-        boolean found_max;
+        double maxB = Double.NEGATIVE_INFINITY;
+        int maxIndex = 0;
+        boolean foundMax;
         do {
-            found_max = false;
-            for (int i = max_index ; i < intervals.size();  i++) {
+            foundMax = false;
+            for (int i = 0; i < intervals.size() && intervals.get(i).a <= L; i++) {
                 Interval I = intervals.get(i);
-                if(I.a > L){
-                    break;
-                }
-                if (I.b >= max_b) {
-                    max_b = I.b;
-                    max_index = I.id;
-                    found_max = true;
+                if (I.a <= L) {
+                    if (I.b > maxB) {
+                        maxB = I.b;
+                        maxIndex = I.id;
+                        foundMax = true;
+                    }
                 }
             }
-            if (!found_max) {
+            if (!foundMax) {
                 return null;
             }
-            S.add(max_index);
-            L = max_b;
+            S.add(maxIndex);
+            L = maxB;
         } while (L < R);
         return S;
-    }
-
-    public static void main(String[] args) {
-        Kattio kattio = new Kattio(System.in);
-
-        while (kattio.hasMoreTokens()) {
-            double L = kattio.getDouble();
-            double R = kattio.getDouble();
-            int n = kattio.getInt();
-            if(n < 0) {
-                System.out.println("impossible");
-                continue;
-            }
-            ArrayList<Interval> intervals = new ArrayList<>(n);
-            for (int id = 0; id < n; ++id) {
-                double a = kattio.getDouble();
-                double b = kattio.getDouble();
-                intervals.add(new Interval(a, b, id));
-            }
-            Collections.sort(intervals);
-
-            ArrayList<Integer> res = solveCase(L, R, n, intervals);
-
-            if (res == null) {
-                System.out.println("impossible");
-            } else {
-                System.out.println(res.size());
-                for (Integer i : res) {
-                    System.out.print(i + " ");
-                }
-                System.out.println();
-            }
-
-        }
     }
 }

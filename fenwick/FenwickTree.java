@@ -12,7 +12,7 @@ class FenwickTree {
 
   /*
    * Creates a Fenwick Tree.
-   * @param n The number of elements in the underlying array.
+   * @param n The number of elements in the underlying array. Must be > -1
    */
   public FenwickTree(int n) {
     this.size = n+1;
