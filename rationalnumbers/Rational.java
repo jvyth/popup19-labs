@@ -91,6 +91,10 @@ public class Rational{
     public static void main(String[] args){
        Rational r1 = new Rational(1,5);
        Rational r2 = new Rational(2,10);
+       Rational r3 = new Rational(370368,3000);
+       Rational r4 = new Rational(3703696968,30000000);
+       System.out.println(r3.reduced());
+       System.out.println(r4.reduced());
        System.out.println(r1.add(r2).reduced());
        System.out.println(r1.mul(r2).reduced());
        System.out.println(r1.div(r2).reduced());
