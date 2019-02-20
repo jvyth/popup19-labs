@@ -9,7 +9,7 @@ public class DijkTimed {
     int[] parents;
     Node[] nodes;
 
-    public DijkTimed(ArrayList < LinkedList < Edge >> nb, int s) {
+    public DijkTimed(ArrayList<LinkedList<Edge>> nb, int s) {
         tentative = new PriorityQueue < > ();
         parents = new int[nb.size()];
         nodes = new Node[nb.size()];
@@ -21,39 +21,56 @@ public class DijkTimed {
         Node neigh;
         Node parent;
         Edge edge;
-        LinkedList < Edge > nbs;
-        ListIterator < Edge > it;
+        LinkedList <Edge> nbs;
+        ListIterator <Edge> it;
         tentative.add(nodes[s]);
-        int waitTime = 0;
+        long waitTime = Long.MAX_VALUE;
+        long currTime;
+        long arrivalTime; 
+        int traversalTime;
+        int firstTimeSlot;
         while (!tentative.isEmpty()) {
             parent = current;
             current = tentative.poll();
             parents[current.index] = parent.index;
             current.visited = true;
+            currTime = current.accWeight;
             it = nb.get(current.index).listIterator();
             while (it.hasNext()) {
                 edge = it.next();
+                traversalTime = edge.weight;
+                firstTimeSlot = edge.t0;
                 neigh = nodes[edge.to];
+                arrivalTime = neigh.accWeight;
 
-                if (!neigh.visited) {
-                    if (current.accWeight == edge.t0) {
-                        waitTime = 0;
-                    } else if (edge.tInc != 0) {
-                        //t0 = 15, inc = 10
-                        waitTime = Math.abs(current.accWeight - edge.t0);
-                         if (current.accWeight > edge.t0) {
-                           waitTime = waitTime % edge.tInc;
-                         }
-                        System.out.println("accWeight: " + current.accWeight + ", t0: " + edge.t0 + ", tInc: " + edge.tInc);
-                        System.out.println("waitTime: " + waitTime);
-                    } else {
-                        waitTime = Math.abs(current.accWeight - edge.t0);
+                /*       -------------------Cases----------------------
+                 * 1) currTime <= firstTimeSlot -> We wait for firstTimeSlot
+                 * 2) currTime > firstTimeSlot -> We wait for next available slot
+                 * 3) currTime > firstTimeSlot && no increment -> Can't reach! 
+                 */
+                if (!neigh.visited) { //Don't go through already visited nodes, they're already best case
+                    if(currTime <= firstTimeSlot){ //Wait for first timeSlot. 
+                        waitTime = firstTimeSlot - currTime;
                     }
-                    if (neigh.accWeight > current.accWeight + edge.weight + waitTime) {
+                    else if ((edge.tInc != 0) && (currTime > firstTimeSlot)) { //Else we have to find next timeslot. Find how long we've already waited since last available slot. Subtract from inc.
+                        if(((currTime - firstTimeSlot) % edge.tInc) == 0){
+                            waitTime = 0;
+                        } else {
+                            waitTime = edge.tInc - ((currTime - firstTimeSlot) % edge.tInc); 
+                        }
+                    } else { // If currTime > firstTimeSlot && edge.tInc == 0
+                        continue;
+                    }
+                    // System.out.println("accWeight: " + currTime + ", t0: " + firstTimeSlot + ", tInc: " + edge.tInc);
+                    // System.out.println("waitTime: " + waitTime);
+                    if (arrivalTime > currTime + traversalTime + waitTime) {
                         if (tentative.contains(neigh)) {
                             tentative.remove(neigh);
                         }
-                        neigh.accWeight = current.accWeight + edge.weight + waitTime;
+                        arrivalTime = currTime + traversalTime + waitTime;
+                        //System.out.println(waitTime);
+                        //System.out.println(arrivalTime);
+                        neigh.accWeight = arrivalTime;
                         tentative.add(neigh);
                     }
                 }
@@ -65,29 +82,23 @@ public class DijkTimed {
         return parents;
     }
 
-    public int getAccWeight(int index) {
+    public long getAccWeight(int index) {
         return nodes[index].accWeight;
     }
 
     private class Node implements Comparable < Node > {
         public int index;
-        public int accWeight;
+        public long accWeight;
         public boolean visited;
 
         public Node(int index) {
             this.index = index;
-            this.accWeight = Integer.MAX_VALUE;
+            this.accWeight = Long.MAX_VALUE;
             visited = false;
         }
 
         public int compareTo(Node node) {
-            if (this.accWeight < node.accWeight) {
-                return -1;
-            } else if (this.accWeight > node.accWeight) {
-                return 1;
-            } else {
-                return 0;
-            }
+            return (int) accWeight - (int) node.accWeight;
         }
     }
 
@@ -129,11 +140,11 @@ public class DijkTimed {
             int[] parents = djik.shortestPath();
 
             int query;
-            int ans;
+            long ans;
             for (int i = 0; i < q; i++) {
                 query = kattio.getInt();
                 ans = djik.getAccWeight(query);
-                if (ans == Integer.MAX_VALUE) {
+                if (ans == Long.MAX_VALUE) {
                     //System.out.println("Impossible");
                     kattio.println("Impossible");
                 } else {
