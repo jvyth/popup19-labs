@@ -40,7 +40,10 @@ public class DijkTimed {
                         waitTime = 0;
                     } else if (edge.tInc != 0) {
                         //t0 = 15, inc = 10
-                        waitTime = Math.abs(current.accWeight - edge.t0) % edge.tInc;
+                        waitTime = Math.abs(current.accWeight - edge.t0);
+                         if (current.accWeight > edge.t0) {
+                           waitTime = waitTime % edge.tInc;
+                         }
                         System.out.println("accWeight: " + current.accWeight + ", t0: " + edge.t0 + ", tInc: " + edge.tInc);
                         System.out.println("waitTime: " + waitTime);
                     } else {
