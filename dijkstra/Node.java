@@ -1,6 +1,6 @@
 public class Node implements Comparable<Node>{
-    public int index; 
-    public int accWeight; 
+    public int index;
+    public int accWeight;
     public boolean visited;
 
     public Node(int index){
