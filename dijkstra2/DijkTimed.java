@@ -4,12 +4,12 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.ListIterator;
 
-public class Dijkstra{
+public class DijkTimed{
     PriorityQueue<Node> tentative;
     int[] parents;
     Node[] nodes;
 
-    public Dijkstra(ArrayList<LinkedList<Edge>> nb, int s){
+    public DijkTimed(ArrayList<LinkedList<Edge>> nb, int s){
         tentative = new PriorityQueue<>();
         parents = new int[nb.size()];
         nodes = new Node[nb.size()];
@@ -33,7 +33,7 @@ public class Dijkstra{
             while(it.hasNext()){
                 edge = it.next();
                 neigh =  nodes[edge.to];
-                if(!neigh.visited){
+                if(!neigh.visited && (neigh.accWeight - edge.t0) % edge.tInc == 0 ){
                     if(neigh.accWeight > current.accWeight + edge.weight){
                         if(tentative.contains(neigh)){
                             tentative.remove(neigh);
@@ -100,15 +100,17 @@ public class Dijkstra{
             for(int i = 0; i < n; i++){
                 graph.add(new LinkedList<Edge>());
             }
-            int from, to, weight;
+            int from, to, t0, tInc, weight;
             for(int i = 0; i < m; i++){
                from = kattio.getInt();
                to = kattio.getInt();
+               t0 = kattio.getInt();
+               tInc = kattio.getInt();
                weight = kattio.getInt();
-               graph.get(from).add(new Edge(to, weight));
+               graph.get(from).add(new Edge(to, weight, t0, tInc));
             }
 
-            Dijkstra djik = new Dijkstra(graph, s);
+            DijkTimed djik = new DijkTimed(graph, s);
             int[] parents = djik.shortestPath();
 
             int query;
