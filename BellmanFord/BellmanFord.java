@@ -1,11 +1,31 @@
 import java.util.*;
 
+/*
+ * The purpose of this class is to find the shortest path
+ * from a fixed starting node to any other node in the graph. 
+ *
+ * This is done by using the Bellman-Ford algorithm.
+ *
+ * @author Jakob Vyth (vyth@kth.se)
+ * @author Carl Nyströmer (carlnys@kth.se)
+ */
 public class BellmanFord{
     int[] parent;
     long[] dist;
     ArrayList<LinkedList<Edge>> edges;
+    int s;
 
+
+    /*
+     * The constructor will apply the Bellman-Ford algorithm to the graph
+     * and save the shortest path between s and every other node. 
+     *
+     * @param nb A datastructure which keeps the list of neighbors for each
+     *             node in the graph, edge weight can be negative.
+     * @param source The index of the starting node.   
+     */    
     public BellmanFord(ArrayList<LinkedList<Edge>> edges, int source){
+        this.s = source;
         this.edges = edges;
         int n = edges.size();
         parent = new int[n];
@@ -31,7 +51,6 @@ public class BellmanFord{
             }
         }
         
-        //System.out.println(Arrays.toString(dist));
         for(int from = 0; from < n; ++from){
             Iterator<Edge> it = edges.get(from).iterator();
             while(it.hasNext()){
@@ -47,9 +66,6 @@ public class BellmanFord{
                 } 
             }
         }
-       // while(!stack.isEmpty()){
-       //     dist[stack.pop()] = Long.MIN_VALUE;
-       // }
     } 
 
     private void markInf(int from){
@@ -73,11 +89,36 @@ public class BellmanFord{
         }
     }
 
-    public long getMinDistTo(int target){
-        return dist[target];
+    /*
+     * Return parent array. To find the path s and t, backtrack
+     * through the parent array from t up until you find s. 
+     *
+     * @return The shortest paths between s and every other node 
+     *         as a parent array. 
+     */
+    public int[] shortestPaths() {
+        return parent;
     }
 
-    public int[] shortestPath(){
-        return parent.clone();
+    /*
+     * @param t The target node. 
+     * @return The shortest path between s and t. 
+     *         If no such path exists, return null.
+     */
+    public LinkedList<Integer> shortestPath(int t){
+        LinkedList<Integer> path = new LinkedList<>();
+        if(dist[t] == Long.MAX_VALUE){
+            return null;
+        }
+        while(t != s){
+            path.push(t);
+            t = parent[t]; 
+        }
+        path.push(s);
+        return path;
+    }
+
+    public long getMinDistTo(int target){
+        return dist[target];
     }
 }

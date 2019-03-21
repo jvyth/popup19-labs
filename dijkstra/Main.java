@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Main{
     public static void main(String[] args){
-        Kattio kattio = new Kattio(System.in, System.out); 
+        Kattio kattio = new Kattio(System.in, System.out);
         int n;
         int m;
         int q;
@@ -26,31 +26,27 @@ public class Main{
             }
             int from, to, weight;
             for(int i = 0; i < m; i++){
-                from = kattio.getInt();
-                to = kattio.getInt();
-                weight = kattio.getInt();
-                graph.get(from).add(new Edge(to, weight));
+               from = kattio.getInt();
+               to = kattio.getInt();
+               weight = kattio.getInt();
+               graph.get(from).add(new Edge(to, weight));
             }
 
-            BellmanFord bf = new BellmanFord(graph, s);
-
             int query;
-            long ans;
+            int ans;
+            Dijkstra djik;
             for(int i = 0; i < q; i++){
                 query = kattio.getInt();
-                ans = bf.getMinDistTo(query);
-                if(ans == Long.MAX_VALUE){
-                    //System.out.println("Impossible");
+                djik = new Dijkstra(graph, s, query); 
+                ans = djik.getAccWeight(query);
+                if(ans == Integer.MAX_VALUE){
                     kattio.println("Impossible");
-                } else if(ans == Long.MIN_VALUE){
-                    //System.out.println(ans);
-                    kattio.println("-Infinity");
                 } else {
                     kattio.println(ans);
                 }
             }
-            //System.out.println();
             kattio.println();
         }
+        kattio.close();
     }
 }
