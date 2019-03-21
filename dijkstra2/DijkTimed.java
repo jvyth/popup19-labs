@@ -24,15 +24,14 @@ public class DijkTimed {
         LinkedList <Edge> nbs;
         ListIterator <Edge> it;
         tentative.add(nodes[s]);
+        parents[nodes[s].index] = nodes[s].index;
         long waitTime = Long.MAX_VALUE;
         long currTime;
-        long arrivalTime; 
+        long arrivalTime;
         int traversalTime;
         int firstTimeSlot;
         while (!tentative.isEmpty()) {
-            parent = current;
             current = tentative.poll();
-            parents[current.index] = parent.index;
             current.visited = true;
             currTime = current.accWeight;
             it = nb.get(current.index).listIterator();
@@ -46,17 +45,17 @@ public class DijkTimed {
                 /*       -------------------Cases----------------------
                  * 1) currTime <= firstTimeSlot -> We wait for firstTimeSlot
                  * 2) currTime > firstTimeSlot -> We wait for next available slot
-                 * 3) currTime > firstTimeSlot && no increment -> Can't reach! 
+                 * 3) currTime > firstTimeSlot && no increment -> Can't reach!
                  */
                 if (!neigh.visited) { //Don't go through already visited nodes, they're already best case
-                    if(currTime <= firstTimeSlot){ //Wait for first timeSlot. 
+                    if(currTime <= firstTimeSlot){ //Wait for first timeSlot.
                         waitTime = firstTimeSlot - currTime;
                     }
                     else if ((edge.tInc != 0) && (currTime > firstTimeSlot)) { //Else we have to find next timeslot. Find how long we've already waited since last available slot. Subtract from inc.
                         if(((currTime - firstTimeSlot) % edge.tInc) == 0){
                             waitTime = 0;
                         } else {
-                            waitTime = edge.tInc - ((currTime - firstTimeSlot) % edge.tInc); 
+                            waitTime = edge.tInc - ((currTime - firstTimeSlot) % edge.tInc);
                         }
                     } else { // If currTime > firstTimeSlot && edge.tInc == 0
                         continue;
@@ -72,6 +71,7 @@ public class DijkTimed {
                         //System.out.println(arrivalTime);
                         neigh.accWeight = arrivalTime;
                         tentative.add(neigh);
+                        parents[neigh.index] = current.index;
                     }
                 }
             }

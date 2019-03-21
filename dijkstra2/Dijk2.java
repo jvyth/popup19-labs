@@ -26,7 +26,7 @@ public class DijkTimed {
         tentative.add(nodes[s]);
         int waitTime = Integer.MAX_VALUE;
         int currTime;
-        int arrivalTime; 
+        int arrivalTime;
         int traversalTime;
         int firstTimeSlot;
         while (!tentative.isEmpty()) {
@@ -46,14 +46,14 @@ public class DijkTimed {
                 /* -------------------Cases----------------------
                  * 1) currTime <= firstTimeSlot -> We wait for firstTimeSlot
                  * 2) currTime > firstTimeSlot -> We wait for next available slot
-                 * 3) currTime > firstTimeSlot && no increment -> Can't reach! 
+                 * 3) currTime > firstTimeSlot && no increment -> Can't reach!
                  */
                 if (!neigh.visited) { //Don't go through already visited nodes, they're already best case
-                    if(currTime <= firstTimeSlot){ //Wait for first timeSlot. 
+                    if(currTime <= firstTimeSlot){ //Wait for first timeSlot.
                         waitTime = Math.abs(currTime - firstTimeSlot);
                     }
                     else if ((edge.tInc != 0) && (currTime > firstTimeSlot)) { //Else we have to find next timeslot. Find how long we've already waited since last available slot. Subtract by inc.
-                        waitTime = edge.tInc - (Math.abs(currTime - firstTimeSlot) % edge.tInc); 
+                        waitTime = edge.tInc - (Math.abs(currTime - firstTimeSlot) % edge.tInc);
                     } else { // If currTime > firstTimeSlot && edge.tInc == 0
                         continue;
                     }

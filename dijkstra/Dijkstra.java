@@ -6,7 +6,7 @@ import java.util.ListIterator;
 
 /*
  * The purpose of this class is to find the shortest path
- * from a fixed starting node to any other node in the graph. 
+ * from a fixed starting node to any other node in the graph.
  *
  * This is done by using Dijkstras algorithm.
  *
@@ -43,23 +43,22 @@ public class Dijkstra{
         LinkedList<Edge> nbs;
         ListIterator<Edge> it;
         tentative.add(nodes[s]);
-        outerloop:
+        boolean[] visited = new boolean[nb.size()];
         while(!tentative.isEmpty()){
             parent = current;
             current = tentative.poll();
             parents[current.index] = parent.index;
-            current.visited = true;
+            if(visited[current.index])
+                continue;
+            visited[current.index] = true;
             it = nb.get(current.index).listIterator();
             while(it.hasNext()){
                 edge = it.next();
                 neigh =  nodes[edge.to];
-                if(!neigh.visited){
+                if(!visited[neigh.index]){
                     if(neigh.accWeight > current.accWeight + edge.weight){
                         neigh.accWeight = current.accWeight + edge.weight;
-                        tentative.add(neigh);
-                        if(edge.to == t){
-                            break outerloop;
-                        }
+                        tentative.add(new Node(neigh));
                     }
                 }
             }
@@ -68,18 +67,18 @@ public class Dijkstra{
 
     /*
      * Return parent array. To find the path s and t, backtrack
-     * through the parent array from t up until you find s. 
+     * through the parent array from t up until you find s.
      *
-     * @return The shortest paths between s and every other node 
-     *         as a parent array. 
+     * @return The shortest paths between s and every other node
+     *         as a parent array.
      */
     public int[] shortestPaths() {
         return parents;
     }
 
     /*
-     * @param t The target node. 
-     * @return The shortest path between s and t. 
+     * @param t The target node.
+     * @return The shortest path between s and t.
      *         If no such path exists, return null.
      */
     public LinkedList<Integer> shortestPath(int t){
@@ -89,7 +88,7 @@ public class Dijkstra{
         }
         while(t != s){
             path.push(t);
-            t = parents[t]; 
+            t = parents[t];
         }
         path.push(s);
         return path;
@@ -106,12 +105,15 @@ public class Dijkstra{
     private class Node implements Comparable<Node>{
         public int index;
         public int accWeight;
-        public boolean visited;
 
         public Node(int index){
             this.index = index;
             this.accWeight = Integer.MAX_VALUE;
-            visited = false;
+        }
+
+         public Node(Node node){
+            this.index = node.index;
+            this.accWeight = node.accWeight;
         }
 
         public int compareTo(Node node){
@@ -122,6 +124,57 @@ public class Dijkstra{
             } else  {
                 return 0;
             }
+        }
+    }
+
+    public static void main(String[] args){
+        Kattio kattio = new Kattio(System.in, System.out);
+        int n;
+        int m;
+        int q;
+        int s;
+
+        while(kattio.hasMoreTokens()){
+            n = kattio.getInt();
+            m = kattio.getInt();
+            q = kattio.getInt();
+            s = kattio.getInt();
+
+            if(n + m + q + s == 0){
+                kattio.close();
+                return;
+            }
+
+            ArrayList<LinkedList<Edge>> graph = new ArrayList<>();
+
+            for(int i = 0; i < n; i++){
+                graph.add(new LinkedList<Edge>());
+            }
+            int from, to, weight;
+            for(int i = 0; i < m; i++){
+               from = kattio.getInt();
+               to = kattio.getInt();
+               weight = kattio.getInt();
+               graph.get(from).add(new Edge(to, weight));
+            }
+
+            Dijkstra djik = new Dijkstra(graph, s);
+
+            int query;
+            int ans;
+            for(int i = 0; i < q; i++){
+                query = kattio.getInt();
+                ans = djik.getAccWeight(query);
+                if(ans == Integer.MAX_VALUE){
+                    //System.out.println("Impossible");
+                    kattio.println("Impossible");
+                } else {
+                    //System.out.println(ans);
+                    kattio.println(ans);
+                }
+            }
+            //System.out.println();
+            kattio.println();
         }
     }
 }
