@@ -4,7 +4,7 @@ class Main {
     public static void main(String[] args) {
         Kattio kattio = new Kattio(System.in, System.out);
         
-        while (kattio.hasMoreTokens()) {
+        while (kattio.ready()) {
             int n = Integer.parseInt(kattio.getLine());
             String[] patterns = new String[n];
             System.err.println(n);

@@ -1,4 +1,4 @@
-/** Simple yet moderately fast I/O routines.
+/* Simple yet moderately fast I/O routines.
  *
  * Example usage:
  *
@@ -37,6 +37,11 @@ import java.io.PrintWriter;
 import java.io.OutputStream;
 
 class Kattio extends PrintWriter {
+    private BufferedReader r;
+    private String line;
+    private StringTokenizer st;
+    private String token;
+
     public Kattio(InputStream i) {
         super(new BufferedOutputStream(System.out));
         r = new BufferedReader(new InputStreamReader(i));
@@ -67,20 +72,22 @@ class Kattio extends PrintWriter {
     }
 
     public String getLine() {
-        try {
-            line = r.readLine();
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-        return line;
+            try { 
+                line = r.readLine();
+            } catch (IOException e) {
+                System.err.println(e);
+            }
+            return line;
     }
-
-
-
-    private BufferedReader r;
-    private String line;
-    private StringTokenizer st;
-    private String token;
+    
+    public boolean ready(){
+        try {
+        return r.ready();
+        } catch (IOException  e) {
+            System.err.println(e);
+            return false;
+        }
+    }
 
     private String peekToken() {
         if (token == null)
