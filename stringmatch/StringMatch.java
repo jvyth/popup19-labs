@@ -20,10 +20,10 @@ class StringMatch {
         for (int i = 0; i < patterns.length; ++i) {
             result.add(new ArrayList<Integer>());
             String word = patterns[i];
-            // Går igenom varje character i ett ord, och man börjar på state 0 
+            // Går igenom varje character i ett ord, och man börjar på state 0
             int currentState = 0;
             for (int j = 0; j < word.length(); ++j) {
-                int character = word.charAt(j); 
+                int character = word.charAt(j);
                 // Om edgen med character från currentstate inte finns
                 // skapar vi ett nytt state och en edge därimellan
                 if (!transition.get(currentState).containsKey(character)){
@@ -41,12 +41,12 @@ class StringMatch {
         */
         int[] suffixLink = new int[transition.size()];
         Queue<Integer> q = new LinkedList<Integer>();
-        
+
         //If there's no transition from root with a character, make it a transition to itself.
         for (int character = 0; character < C; ++character) {
             if(!transition.get(0).containsKey(character)){
                 transition.get(0).put(character, 0);
-            //Create suffixlinks from neighbors to root
+                //Create suffixlinks from neighbors to root
             } else {
                 int neighToRoot = transition.get(0).get(character);
                 suffixLink[neighToRoot] = 0;
@@ -95,13 +95,10 @@ class StringMatch {
                 continue;
             }
 
-            for (int j = 0; j < patterns.length; ++j) {
-                BitSet word = new BitSet(patterns.length);
-                word.set(j);
-                if (match.get(currentState).intersects(word)) {
-                    int position = i - patterns[j].length() + 1;
-                    result.get(j).add(position);
-                }
+            BitSet matching = match.get(currentState);
+            for (int word = matching.nextSetBit(0); word >= 0; word = matching.nextSetBit(word+1)) {
+                int position = i - patterns[word].length() + 1;
+                result.get(word).add(position);
             }
         }
 

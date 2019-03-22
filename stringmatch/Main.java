@@ -3,11 +3,10 @@ import java.util.*;
 class Main {
     public static void main(String[] args) {
         Kattio kattio = new Kattio(System.in, System.out);
-        
+
         while (kattio.ready()) {
             int n = Integer.parseInt(kattio.getLine());
             String[] patterns = new String[n];
-            //System.err.println(n);
             for (int i = 0; i < n; ++i) {
                 patterns[i] = kattio.getLine();
             }
