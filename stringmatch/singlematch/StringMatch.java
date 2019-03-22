@@ -40,9 +40,10 @@ class StringMatch {
         ======================ADD LINKS==============================
         */
         int[] suffixLink = new int[transition.size()];
+        Arrays.fill(suffixLink, -1);
         Queue<Integer> q = new LinkedList<Integer>();
         
-        //If there's no transition from root with a character, make it a transition to itself.
+        //If there's no transition from root to a character, make it a transition.
         for (int character = 0; character < C; ++character) {
             if(!transition.get(0).containsKey(character)){
                 transition.get(0).put(character, 0);
@@ -54,17 +55,14 @@ class StringMatch {
             }
         }
 
-        //Use BFS to build rest of suffixlinks
         while (!q.isEmpty()) {
             int state = q.poll();
             for (int character : transition.get(state).keySet()) {
                 int nextState = transition.get(state).get(character);
                 int fallBackState = suffixLink[state];
-                boolean noProperSuffix = !transition.get(fallBackState).containsKey(character);
 
-                while (noProperSuffix) {
+                while (!transition.get(fallBackState).containsKey(character)) {
                     fallBackState = suffixLink[fallBackState];
-                    noProperSuffix = !transition.get(fallBackState).containsKey(character);
                 }
 
                 fallBackState = transition.get(fallBackState).get(character);
