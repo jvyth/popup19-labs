@@ -1,9 +1,10 @@
 import java.util.*;
+import java.time.*;
 
 class Main {
     public static void main(String[] args) {
         Kattio kattio = new Kattio(System.in, System.out);
-
+        Instant start = Instant.now();
         while (kattio.ready()) {
             String[] patterns = new String[1];
             patterns[0] = kattio.getLine();
@@ -16,6 +17,9 @@ class Main {
                 kattio.println();
             }
         }
+        Instant end = Instant.now();
+        Duration interval = Duration.between(start, end);
+        kattio.println("Time: " + interval.toMillis());
         kattio.close();
     }
 }
