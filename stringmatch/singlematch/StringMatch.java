@@ -17,7 +17,7 @@ class StringMatch {
         */
         transition.add(new HashMap<Integer, Integer>());
         match.add(new BitSet());
-        for (int i = 0; i < patterns.length; ++i) {
+        for (int i = 0; i < patterns.length; ++i) { // O(k)
             result.add(new ArrayList<Integer>());
             String word = patterns[i];
             // Går igenom varje character i ett ord, och man börjar på state 0
@@ -43,7 +43,7 @@ class StringMatch {
         Queue<Integer> q = new LinkedList<Integer>();
 
         //If there's no transition from root with a character, make it a transition to itself.
-        for (int character = 0; character < C; ++character) {
+        for (int character = 0; character < C; ++character) { // O(255)
             if(!transition.get(0).containsKey(character)){
                 transition.get(0).put(character, 0);
                 //Create suffixlinks from neighbors to root
@@ -55,7 +55,7 @@ class StringMatch {
         }
 
         //Use BFS to build rest of suffixlinks
-        while (!q.isEmpty()) {
+        while (!q.isEmpty()) { // O(k)
             int state = q.poll();
             for (int character : transition.get(state).keySet()) {
                 int nextState = transition.get(state).get(character);
@@ -80,7 +80,7 @@ class StringMatch {
         ======================FIND PATTERNS==============================
         */
         int currentState = 0;
-        for (int i = 0; i < text.length(); ++i) {
+        for (int i = 0; i < text.length(); ++i) { // O(|text| + |patterns|)
             int character = text.charAt(i);
             if (transition.get(currentState).containsKey(character)) {
                 currentState = transition.get(currentState).get(character);
