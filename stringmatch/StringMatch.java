@@ -3,6 +3,44 @@ import java.util.*;
 class StringMatch {
     final static int C = 255;
 
+    public static ArrayList<Integer> find(String pattern, String text) {
+        int n = pattern.length();
+        int[] jump = new int[n];
+        //For substring of pattern of length i, find longest prefix, which is also a suffix
+        for (int i = 1; i < n; ++i) {
+            int j = jump[i-1]; 
+            while (j > 0 && pattern.charAt(i) != pattern.charAt(j)) {
+                j = jump[j-1];
+            }
+            if (pattern.charAt(i) == pattern.charAt(j)) {
+                j++;
+            }
+            jump[i] = j;
+        }
+
+        int i = 0; 
+        int j = 0; 
+        ArrayList<Integer> ans = new ArrayList<Integer>();
+        while (i < text.length()) {
+            if (pattern.charAt(j) == text.charAt(i)) {
+                ++j;
+                ++i;
+            }
+
+            if (j == n) {
+                ans.add(i-j); 
+                j = jump[j-1];
+            } else if (i < text.length() && pattern.charAt(j) != text.charAt(i) ) {
+                if (j != 0){
+                    j = jump[j-1];
+                } else {
+                    ++i; 
+                }
+            }
+        }
+        return ans;
+    }
+
     public static ArrayList<ArrayList<Integer>> find(String[] patterns, String text) {
 
         //Lägg till ett bitset för varje state när vi generar dem
