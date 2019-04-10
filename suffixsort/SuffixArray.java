@@ -2,7 +2,7 @@ import java.util.*;
 
 public class SuffixArray {
     
-    private Suffix[] sa; 
+    private ArrayList<Suffix> sa; 
 
     private class Suffix implements Comparable<Suffix> {
         int index; 
@@ -30,54 +30,56 @@ public class SuffixArray {
 
     public SuffixArray(String str) {
         int n = str.length();
-        sa = new Suffix[n];
-        Suffix[] suffix = new Suffix[n];
+        sa = new ArrayList<Suffix>(n);
+        ArrayList<Suffix> suffix = new ArrayList<Suffix>(n);
         for (int i = 0; i < n-1; ++i) {
-                sa[i] = new Suffix(i, str.charAt(i), str.charAt(i+1));
-                suffix[i] = sa[i];
+                Suffix s = new Suffix(i, str.charAt(i), str.charAt(i+1));
+                suffix.add(s);
+                sa.add(s);
         }
-        sa[n-1] = new Suffix(n-1, str.charAt(n-1), -1);
-        suffix[n-1] = sa[n-1];
+        Suffix s = new Suffix(n-1, str.charAt(n-1), -1);
+        suffix.add(s);
+        sa.add(s);
 
-        Arrays.sort(sa);
-        //System.out.println(Arrays.toString(sa));
+        Collections.sort(sa);
         
         for (int k = 4; k < 2*n; k*=2) {
             int rank = 0;
-            int previousRank = sa[0].r1;
-            sa[0].r1 = rank;
+            int previousRank = sa.get(0).r1;
+            sa.get(0).r1 = rank;
             
             for (int i = 1; i < n; ++i){
-                if (sa[i].r1 == previousRank && sa[i].r2 == sa[i-1].r2){
-                    sa[i].r1 = rank;
+                s = sa.get(i);
+                if (s.r1 == previousRank && s.r2 == sa.get(i-1).r2){
+                    s.r1 = rank;
                 } else {
                     ++rank;
-                    previousRank = sa[i].r1;
-                    sa[i].r1 = rank;
+                    previousRank = s.r1;
+                    s.r1 = rank;
                }
             }
             
 
             for(int i = 0; i < n; ++i) {
-                int r = i + k/2; 
+                int r = i + k/2;
+                s = suffix.get(i);
                 if (r < n) {
-                    suffix[i].r2 = suffix[r].r1;
+                    s.r2 = suffix.get(r).r1;
                 } else {
-                    suffix[i].r2 = -1;
+                    s.r2 = -1;
                 }
             }
 
-            Arrays.sort(sa);
-            //System.out.println(Arrays.toString(sa));
+            Collections.sort(sa);
         }
     }
 
     public String toString(){
-        return Arrays.toString(sa);
+        return sa.toString();
     }
 
     public int getSuffix(int i) {
-        return sa[i].index; 
+        return sa.get(i).index; 
     }
 
     public static void main(String[] args) { 
@@ -96,8 +98,8 @@ public class SuffixArray {
             }
             kattio.println();
         }
-        kattio.println((System.currentTimeMillis() - startTime)/1000);
-        kattio.println((System.currentTimeMillis() - startTime));
+        //kattio.println((System.currentTimeMillis() - startTime)/1000);
+        //kattio.println((System.currentTimeMillis() - startTime));
         kattio.close();
     }
 }
