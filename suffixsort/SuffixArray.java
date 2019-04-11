@@ -1,13 +1,13 @@
 import java.util.*;
 
 public class SuffixArray {
-    
-    private ArrayList<Suffix> sa; 
+
+    private ArrayList<Suffix> sa;
 
     private class Suffix implements Comparable<Suffix> {
-        int index; 
+        int index;
         int r1;
-        int r2; 
+        int r2;
 
         public Suffix(int index, int r1, int r2) {
             this.index = index;
@@ -17,7 +17,7 @@ public class SuffixArray {
 
         public int compareTo(Suffix other) {
             if(r1 == other.r1){
-                return r2 - other.r2; 
+                return r2 - other.r2;
             } else {
                 return r1 - other.r1;
             }
@@ -37,19 +37,19 @@ public class SuffixArray {
                 suffix.add(s);
                 sa.add(s);
         }
-        Suffix s = new Suffix(n-1, str.charAt(n-1), -1);
-        suffix.add(s);
-        sa.add(s);
+        Suffix last = new Suffix(n-1, str.charAt(n-1), -1);
+        suffix.add(last);
+        sa.add(last);
 
         Collections.sort(sa);
-        
+
         for (int k = 4; k < 2*n; k*=2) {
             int rank = 0;
             int previousRank = sa.get(0).r1;
             sa.get(0).r1 = rank;
-            
+
             for (int i = 1; i < n; ++i){
-                s = sa.get(i);
+                Suffix s = sa.get(i);
                 if (s.r1 == previousRank && s.r2 == sa.get(i-1).r2){
                     s.r1 = rank;
                 } else {
@@ -58,11 +58,11 @@ public class SuffixArray {
                     s.r1 = rank;
                }
             }
-            
+
 
             for(int i = 0; i < n; ++i) {
                 int r = i + k/2;
-                s = suffix.get(i);
+                Suffix s = suffix.get(i);
                 if (r < n) {
                     s.r2 = suffix.get(r).r1;
                 } else {
@@ -79,27 +79,6 @@ public class SuffixArray {
     }
 
     public int getSuffix(int i) {
-        return sa.get(i).index; 
-    }
-
-    public static void main(String[] args) { 
-        final long startTime = System.currentTimeMillis();
-        Kattio kattio = new Kattio(System.in, System.out);
-        String str; 
-        int n; 
-        while(kattio.ready()){
-            str = kattio.getLine();
-            SuffixArray sa = new SuffixArray(str);
-            n = kattio.getInt();
-            for (int i = 0; i < n; ++i) {
-                kattio.print(sa.getSuffix(kattio.getInt()));
-                kattio.print(" ");
-                //System.out.printf("%d ", sa.getSuffix(kattio.getInt()));
-            }
-            kattio.println();
-        }
-        //kattio.println((System.currentTimeMillis() - startTime)/1000);
-        //kattio.println((System.currentTimeMillis() - startTime));
-        kattio.close();
+        return sa.get(i).index;
     }
 }
