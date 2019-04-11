@@ -72,14 +72,14 @@ class Kattio extends PrintWriter {
     }
 
     public String getLine() {
-            try { 
+            try {
                 line = r.readLine();
             } catch (IOException e) {
                 System.err.println(e);
             }
             return line;
     }
-    
+
     public boolean ready(){
         try {
         return r.ready();
