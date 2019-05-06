@@ -1,4 +1,4 @@
-public class Point{
+public class Point {
     public Rational x;
     public Rational y;
     public Point(double x, double y){
@@ -12,6 +12,12 @@ public class Point{
     }
 
     public static void main(String[] args){
+        Point p1 = new Point(1, 1);
+        Point p2 = new Point(1, 1);
+        Point p3 = new Point(1, 1);
+        Point p4 = new Point(2, 1);
+
+        Point p5 = new Point(2, 1);
     }
 
     public Rational dot(Point p2){
@@ -51,6 +57,27 @@ public class Point{
 
     @Override
     public String toString(){
-        return "(" + x.toDouble() + "," + y.toDouble() + ")";
+        //return "(" + x.toDouble() + "," + y.toDouble() + ")";
+        String sx = String.format("%.2f", round(x.toDouble()));
+        String sy = String.format("%.2f", round(y.toDouble()));
+        return sx + " " + sy;
+    }
+
+    public double round(double x){
+        if(x > 0){
+            return (double) ((int) (x * 100 + 0.5)) / 100;
+        } else if (x < 0){
+            return (double) ((int) (x * 100 - 0.5)) / 100;
+        } else {
+            return 0; 
+        }
+    }
+
+    public boolean isEqual(Point p2){
+        if(x.toDouble() == p2.x.toDouble() && y.toDouble() == p2.y.toDouble()){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
