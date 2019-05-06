@@ -26,11 +26,12 @@ public class LineSegment{
 
         //Edge case 2 - if one of the segments actually is a point
         if(p1.isEqual(p2)){
-            //if l1 is a point, check if point lies on l2 (between q1-q2)
+            //if l1 is a point, check if point lies on l2s line
             if(q2.sub(q1).cross(q1.sub(p1)).isZero()){
                 numer = p1.sub(q1).dot(q2.sub(q1));
                 denom = q2.sub(q1).dot(q2.sub(q1));
                 Rational a1 = numer.div(denom);
+                //Check that the point lie within segment 
                 if(a1.toDouble() >= 0 && a1.toDouble() <= 1){
                     return new Point[]{p1};
                 } else {
@@ -57,9 +58,9 @@ public class LineSegment{
         numer = q1.sub(p1).cross(q2.sub(q1));
         denom = p2.sub(p1).cross(q2.sub(q1));
 
-        //parallel
+        //Check if segments are parallel 
         if(denom.isZero()){
-            //collinear
+            //Check if they are collinear
             if(p2.sub(p1).cross(q1.sub(p1)).isZero()){
                 numer = q1.sub(p1).dot(p2.sub(p1));
                 denom = p2.sub(p1).dot(p2.sub(p1));
@@ -71,6 +72,8 @@ public class LineSegment{
 
                 Point min; 
                 Point max;
+
+                //Check in which interval the coincide.
                 if(a1.toDouble() < a2.toDouble()){
                     if(a2.toDouble() > 1) {
                         a2 = new Rational(1);
@@ -94,6 +97,8 @@ public class LineSegment{
                     min = p1.add(p2.sub(p1).mul(a2));
                     max = p1.add(p2.sub(p1).mul(a1));
                 }
+
+                //Beautify output according to problem statement
                 if(Math.abs(min.x.toDouble() - max.x.toDouble()) < 1e-6){
                     if(min.y.toDouble() < max.y.toDouble()){
                         return new Point[]{min,max};
@@ -120,6 +125,8 @@ public class LineSegment{
         Point intersection = p1.add((p2.sub(p1).mul(s)));
         //Point r1 = q1.add((q2.sub(q1).mul(t)));
 
+        //"Regular" intersection - check such that intersections are within
+        //segment bounds
         if(s.toDouble() >= 0 && s.toDouble() <= 1 && t.toDouble() >= 0 && t.toDouble() <= 1){
             return new Point[]{intersection};
         } else {
