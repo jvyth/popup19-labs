@@ -8,7 +8,7 @@
  *  @author Jakob Vyth (vyth@kth.se)
  *  @author Carl Nyströmer (carlnys@kth.se)
  */
-public class Rational {
+public class Rational implements Comparable<Rational>{
     private long numer;
     private long denom;
 
@@ -24,14 +24,9 @@ public class Rational {
     }
 
     public Rational(double d){
-        String num = Double.toString(Math.abs(d));
-        long decimalIndex = num.indexOf(".");
-        long numDecimals = num.length() - decimalIndex -1;
-        long power = (long) (Math.pow(10, numDecimals) + 1e-5);
-        //123.456 * 10^3 = 123456.565656
-        long x = (long) (d * power);
-        this.numer = x;
-        this.denom = power;
+        Rational r = new Rational((long) (d*1e6),(long)1e6).reduced();
+        this.numer = r.numer;
+        this.denom = r.denom;
     }
 
     /*
@@ -124,6 +119,34 @@ public class Rational {
     public boolean isZero(){
         if(numer == 0){
             return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int compareTo(Rational other){
+        Rational res = sub(other);
+        if(res.numer == 0) {
+            return 0;
+        } else if(res.numer < 0 && res.denom >0){
+            return -1;    
+        } else if (res.denom < 0 && res.numer > 0) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
+
+    public boolean inRange(long a, long b) {
+        Rational x1 = new Rational(a, 1); 
+        Rational x2 = new Rational(b, 1); 
+
+        if(compareTo(x1) != -1){ 
+            if(compareTo(x2) != 1){
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
